@@ -1,11 +1,19 @@
-// Capas: db -> controller -> handler -> routes -> Postman
-const express = require('express');
+import express from 'express';
+import cors from 'cors';
+
 const app = express();
-app.use(express.json());
 const PORT = 5000;
 
+app.use(cors());
+app.use(express.json());
+
+// Importación de rutas
 import userRoutes from './routes/users';
 
+// Rutas de la API
 app.use('/api', userRoutes);
 
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+// Inicialización del servidor
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
