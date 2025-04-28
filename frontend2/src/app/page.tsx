@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { verifyUser } from '@/hooks/verifyUser'; // Asegúrate de que el hook esté bien importado
+import { verifyUser } from '@/hooks/verifyUser';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -11,18 +11,15 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');  // Limpiar errores previos
+    setError('');
 
     try {
-      // Llamada al hook verifyUser para verificar el usuario y la contraseña
       const result = await verifyUser({ UserName: username, Password: password }); // Corregido aquí
       console.log(result);
 
       if (result.isUser && result.isPassword) {
-        // Si el usuario es válido, redirigir a la página de bienvenida
         router.push(`/bienvenida?username=${encodeURIComponent(username)}`);
       } else {
-        // Mostrar errores según la respuesta del backend
         if (!result.isUser) {
           setError('Usuario no existe');
         } else if (!result.isPassword) {
