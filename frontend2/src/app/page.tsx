@@ -1,41 +1,39 @@
 'use client';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-// Simulación de tu hook verifyUser
-async function verifyUser(username: string, password: string): Promise<{ isUser: boolean; isPassword: boolean }> {
-  // Aquí llamarías a tu API o lógica real
-  if (username === "admin" && password === "1234") {
-    return { isUser: true, isPassword: true };
-  } else if (username !== "admin") {
-    return { isUser: false, isPassword: false };
-  } else {
-    return { isUser: true, isPassword: false };
-  }
-}
+import { useRouter } from 'next/navigation';
+import { verifyUser } from '@/hooks/verifyUser'; // Asegúrate de que el hook esté bien importado
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError('');  // Limpiar errores previos
 
-    const result = await verifyUser(username, password);
+    try {
+      // Llamada al hook verifyUser para verificar el usuario y la contraseña
+      const result = await verifyUser({ UserName: username, Password: password }); // Corregido aquí
+      console.log(result);
 
-    if (result.isUser && result.isPassword) {
-      navigate(`/bienvenida?username=${encodeURIComponent(username)}`);
-    } else {
-      if (!result.isUser) {
-        setError('Usuario no existe');
-      } else if (!result.isPassword) {
-        setError('Contraseña incorrecta');
+      if (result.isUser && result.isPassword) {
+        // Si el usuario es válido, redirigir a la página de bienvenida
+        router.push(`/bienvenida?username=${encodeURIComponent(username)}`);
       } else {
-        setError('Error desconocido');
+        // Mostrar errores según la respuesta del backend
+        if (!result.isUser) {
+          setError('Usuario no existe');
+        } else if (!result.isPassword) {
+          setError('Contraseña incorrecta');
+        } else {
+          setError('Error desconocido');
+        }
       }
+    } catch (error) {
+      console.error('Error al verificar el usuario:', error);
+      setError('Error de conexión o desconocido');
     }
   };
 
@@ -45,20 +43,20 @@ export default function LoginPage() {
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: 10 }}>
           <label>Username:</label><br />
-          <input 
-            type="text" 
-            value={username} 
-            onChange={(e) => setUsername(e.target.value)} 
-            required 
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
           />
         </div>
         <div style={{ marginBottom: 10 }}>
           <label>Password:</label><br />
-          <input 
-            type="password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
         {error && (
