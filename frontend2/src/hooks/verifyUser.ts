@@ -4,7 +4,7 @@ import { url } from "@/utils/constants";
 
 export const verifyUser = async (user: SendUser): Promise<isValidUser> => {
   try {
-    const response = await fetch(`${url}/api/verifyUser`, {
+    const response = await fetch(`${url}/api/verify`, {  // Corrected endpoint here
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
