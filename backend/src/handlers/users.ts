@@ -23,8 +23,8 @@ export default class UsersHandler {
 
     getUserData = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { username } = req.body;
-            const userData = await this.userController.getUserData(username);
+            const { UserName } = req.body;
+            const userData = await this.userController.getUserData(UserName);
             res.json(userData);
         } catch (error) {
             next(error);
